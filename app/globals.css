@@ -185,3 +185,17 @@ p { margin: 0 0 1em; }
   .hero-inner { padding-top: 110px; padding-bottom: 110px; }
   .trust, .footer-grid { grid-template-columns: 1fr; }
 }
+
+/* Lower homepage sections */
+.spotlight-img img { width: 100%; height: auto; display: block; }
+.ticks { list-style: none; margin: 22px 0 0; padding: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 8px 18px; font-size: .9rem; color: var(--muted); }
+.ticks li::before { content: "\2713"; color: var(--accent); margin-right: 8px; }
+.reviews { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-bottom: 32px; }
+.review { margin: 0; padding: 26px; background: var(--bg-soft); border-top: 3px solid var(--accent); }
+.review .stars { color: var(--accent); letter-spacing: .15em; margin-bottom: 10px; }
+.review blockquote { margin: 0 0 16px; font-family: var(--font-display); font-size: 1.2rem; line-height: 1.45; }
+.review figcaption { display: grid; gap: 2px; font-size: .88rem; }
+.review figcaption span { color: var(--muted); }
+.brands { list-style: none; margin: 24px 0 0; padding: 0; display: flex; flex-wrap: wrap; justify-content: center; gap: 12px 36px; }
+.brands a { font-size: .95rem; letter-spacing: .08em; text-transform: uppercase; }
+@media (max-width: 900px) { .reviews { grid-template-columns: 1fr; } .ticks { grid-template-columns: 1fr; } }
