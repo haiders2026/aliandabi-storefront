@@ -199,3 +199,8 @@ p { margin: 0 0 1em; }
 .brands { list-style: none; margin: 24px 0 0; padding: 0; display: flex; flex-wrap: wrap; justify-content: center; gap: 12px 36px; }
 .brands a { font-size: .95rem; letter-spacing: .08em; text-transform: uppercase; }
 @media (max-width: 900px) { .reviews { grid-template-columns: 1fr; } .ticks { grid-template-columns: 1fr; } }
+
+/* Why ALIANDABI: horizontal scroll row */
+.why-scroll { display: flex; gap: 20px; overflow-x: auto; scroll-snap-type: x mandatory; padding: 4px 4px 18px; -webkit-overflow-scrolling: touch; }
+.why-card { flex: 0 0 min(330px, 82%); scroll-snap-align: start; background: #fff; padding: 26px; border-top: 3px solid var(--accent); text-align: left; }
+.why-card p { color: var(--muted); font-size: .92rem; margin: 0; }
