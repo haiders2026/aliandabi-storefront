@@ -211,7 +211,7 @@ export default async function Home() {
           </header>
           <div className="marquee" aria-label="Why choose ali&abi">
             <div className="marquee-track">
-              {[0, 1].map((copy) => (
+              {[1, 0].map((copy) => (
                 <div className="marquee-group" key={copy} aria-hidden={copy === 1}>
                   {MARQUEE.map(([title, text]) => (
                     <div key={`${copy}-${title}`} className="why-card">
