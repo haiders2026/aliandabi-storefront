@@ -1,4 +1,3 @@
-import Image from "next/image";
 import Link from "next/link";
 import { ProductGrid } from "@/components/ProductCard";
 import { categoryPath, decodeEntities, getCategories, getProducts } from "@/lib/woo";
@@ -6,6 +5,15 @@ import { categoryPath, decodeEntities, getCategories, getProducts } from "@/lib/
 export const revalidate = 300;
 
 const COLLECTIONS = ["rings", "pendants_necklaces", "earrings", "bracelets"];
+
+// Same tile photos the current homepage uses (falls back to the category image from WooCommerce).
+const UP = "https://www.aliandabi.com/wp-content/uploads";
+const TILE_IMAGES: Record<string, string> = {
+  rings: `${UP}/Rings_Category.jpg`,
+  pendants_necklaces: `${UP}/Necklace_Cat.jpg`,
+  earrings: `${UP}/Earrings_Cat.png`,
+  bracelets: `${UP}/Bracelets_Cat-1.jpg`,
+};
 
 const JOURNEY = [
   ["Initial Sketch", "We map out your inspirations by hand to establish the structural proportions."],
@@ -29,8 +37,12 @@ export default async function Home() {
   return (
     <>
       <section className="hero">
+        <picture className="hero-bg">
+          <source media="(max-width: 700px)" srcSet={`${UP}/AnA-BannerMobile2.png`} />
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={`${UP}/AnA-Banner1.png`} alt="ali&abi | Lab Grown Diamond Fine Jewelry" fetchPriority="high" />
+        </picture>
         <div className="container hero-inner">
-          <p className="eyebrow">ali&amp;abi</p>
           <h1>Lab Grown Diamond</h1>
           <p className="hero-sub">Fine jewelry at exceptional value</p>
           <Link href="/product-category/all_jewelry" className="btn btn-primary">
@@ -50,8 +62,9 @@ export default async function Home() {
             if (!cat) return null;
             return (
               <Link key={cat.id} href={categoryPath(cat, cats)} className="collection">
-                {cat.image?.src ? (
-                  <Image src={cat.image.src} alt={cat.image.alt || cat.name} width={600} height={600} sizes="(max-width: 700px) 50vw, 25vw" />
+                {TILE_IMAGES[slug] || cat.image?.src ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={TILE_IMAGES[slug] || cat.image!.src} alt={cat.image?.alt || cat.name} loading="lazy" />
                 ) : (
                   <div className="card-placeholder" />
                 )}
