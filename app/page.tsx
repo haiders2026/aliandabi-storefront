@@ -61,6 +61,8 @@ const TRUST = [
   ["Worry-free Returns", "30 days returns – no questions asked."],
 ];
 
+const MARQUEE = [...WHY, ...TRUST];
+
 export default async function Home() {
   const [cats, featured] = await Promise.all([getCategories(), getProducts({ perPage: 8, featured: true })]);
   const latest = featured.products.length >= 4 ? featured : await getProducts({ perPage: 8, orderby: "date", order: "desc" });
@@ -207,25 +209,20 @@ export default async function Home() {
             <h2>Why ALIANDABI?</h2>
             <p>For over 25 years, we believe buying fine jewelry should be a transparent, secure, and deeply personal experience.</p>
           </header>
-          <div className="why-scroll">
-            {WHY.map(([title, text]) => (
-              <div key={title} className="why-card">
-                <h3>{title}</h3>
-                <p>{text}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="container section">
-        <div className="trust">
-          {TRUST.map(([title, text]) => (
-            <div key={title}>
-              <h3>{title}</h3>
-              <p>{text}</p>
+          <div className="marquee" aria-label="Why choose ali&abi">
+            <div className="marquee-track">
+              {[0, 1].map((copy) => (
+                <div className="marquee-group" key={copy} aria-hidden={copy === 1}>
+                  {MARQUEE.map(([title, text]) => (
+                    <div key={`${copy}-${title}`} className="why-card">
+                      <h3>{title}</h3>
+                      <p>{text}</p>
+                    </div>
+                  ))}
+                </div>
+              ))}
             </div>
-          ))}
+          </div>
         </div>
       </section>
 
