@@ -1,17 +1,68 @@
 import Link from "next/link";
-import { categoryPath, getCategories, WC_PUBLIC_BASE, decodeEntities } from "@/lib/woo";
+import { WC_PUBLIC_BASE } from "@/lib/woo";
 import { CartLink } from "./CartLink";
 
 const LOGO = "https://www.aliandabi.com/wp-content/uploads/thegem/logos/logo_bcec44bbb96912dec54d0f98ecadb25f_1x.png";
 
-// Menu order used on the current site; categories not listed here are skipped from the top nav.
-const NAV_ORDER = ["engagement_rings", "wedding_bands", "earrings", "pendants_necklaces", "bracelets"];
+const P = "/product-category/all_jewelry";
 
-export async function Header() {
-  const cats = await getCategories();
-  const root = cats.find((c) => c.slug === "all_jewelry");
-  const top = NAV_ORDER.map((slug) => cats.find((c) => c.slug === slug)).filter((c): c is NonNullable<typeof c> => Boolean(c));
+// Same menu as the current WordPress site (hard-coded so empty categories still appear).
+const NAV: { label: string; href: string; children?: [string, string][] }[] = [
+  { label: "Home", href: "/" },
+  {
+    label: "Engagement Rings",
+    href: `${P}/engagement_rings`,
+    children: [
+      ["Solitaire Engagement Rings", `${P}/engagement_rings/solitaire_engagement_rings`],
+      ["Halo Engagement Rings", `${P}/engagement_rings/halo_engagement_rings`],
+      ["Double Halo Engagement Rings", `${P}/engagement_rings/double_halo_engaement_rings`],
+      ["Accented Engagement Rings", `${P}/engagement_rings/accented-engagement_rings`],
+      ["Fashion Engagement Rings", `${P}/engagement_rings/fashion_engagement_rings`],
+    ],
+  },
+  {
+    label: "Wedding Bands",
+    href: `${P}/wedding_bands`,
+    children: [
+      ["Plain Metal Bands", `${P}/wedding_bands/plain_metal_bands`],
+      ["Bands with Stones", `${P}/wedding_bands/bands_with_stones`],
+      ["Alternate Metal Bands", `${P}/wedding_bands/alternate_metal_bands`],
+    ],
+  },
+  {
+    label: "Earrings",
+    href: `${P}/earrings`,
+    children: [
+      ["Stud Earrings", `${P}/earrings/stud_earrings`],
+      ["Halo Earrings", `${P}/earrings/halo_earrings`],
+      ["Double Halo Earrings", `${P}/earrings/double_halo_earrings`],
+      ["Dangle Earrings", `${P}/earrings/dangle_earrings`],
+      ["Fashion Earrings", `${P}/earrings/fashion_earrings`],
+    ],
+  },
+  {
+    label: "Pendants / Necklaces",
+    href: `${P}/pendants_necklaces`,
+    children: [
+      ["Solitaire Pendants", `${P}/pendants_necklaces/solitaire_pendants`],
+      ["Halo Pendants", `${P}/pendants_necklaces/halo_pendants`],
+      ["Double Halo Pendants", `${P}/pendants_necklaces/double_halo_pendants`],
+      ["Accented Pendants", `${P}/pendants_necklaces/accented_pendants`],
+      ["Fashion Pendants", `${P}/pendants_necklaces/fashion_pendants`],
+    ],
+  },
+  {
+    label: "Bracelets",
+    href: `${P}/bracelets`,
+    children: [
+      ["Tennis Bracelets", `${P}/bracelets/tennis_bracelets`],
+      ["Fashion Bracelets", `${P}/bracelets/fashion-bracelets`],
+    ],
+  },
+  { label: "Custom Design", href: "/custom-design" },
+];
 
+export function Header() {
   return (
     <header className="site-header">
       <div className="topbar">
@@ -24,29 +75,20 @@ export async function Header() {
           <img src={LOGO} alt="ali&abi" height={44} />
         </Link>
         <nav className="nav" aria-label="Main">
-          <div className="nav-item">
-            <Link href="/">Home</Link>
-          </div>
-          {top.map((cat) => {
-            const children = cats.filter((c) => c.parent === cat.id);
-            return (
-              <div className="nav-item" key={cat.id}>
-                <Link href={categoryPath(cat, cats)}>{decodeEntities(cat.name)}</Link>
-                {children.length > 0 && (
-                  <div className="dropdown">
-                    {children.map((child) => (
-                      <Link key={child.id} href={categoryPath(child, cats)}>
-                        {decodeEntities(child.name)}
-                      </Link>
-                    ))}
-                  </div>
-                )}
-              </div>
-            );
-          })}
-          <div className="nav-item">
-            <Link href="/custom-design">Custom Design</Link>
-          </div>
+          {NAV.map((item) => (
+            <div className="nav-item" key={item.label}>
+              <Link href={item.href}>{item.label}</Link>
+              {item.children && (
+                <div className="dropdown">
+                  {item.children.map(([label, href]) => (
+                    <Link key={href} href={href}>
+                      {label}
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </div>
+          ))}
           <div className="nav-item">
             <a href={`${WC_PUBLIC_BASE}/my-account/`}>My Account</a>
           </div>
@@ -58,7 +100,6 @@ export async function Header() {
           <CartLink />
         </div>
       </div>
-      {root && null}
     </header>
   );
 }
