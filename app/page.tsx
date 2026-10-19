@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { ProductGrid } from "@/components/ProductCard";
-import { categoryPath, decodeEntities, getCategories, getProducts } from "@/lib/woo";
+import { categoryPath, decodeEntities, getCategories, getProducts, WC_PUBLIC_BASE } from "@/lib/woo";
 
 export const revalidate = 300;
 
@@ -21,6 +21,37 @@ const JOURNEY = [
   ["Lost-Wax Casting", "A physical 1:1 mold is grown to hold the molten precious metal."],
   ["Master Stone Setting", "Gems are microscopically aligned and hand-secured into the metal prongs."],
   ["Final Mirror Polish", "The piece undergoes a multi-stage lapidary polish for maximum light reflection."],
+];
+
+const SPOTLIGHT_FEATURES = [
+  "Handcrafted Custom Designs",
+  "Complimentary Insured Shipping",
+  "IGI or GIA Certified Conflict-Free Diamonds",
+  "Aliandabi Lifetime Warranty",
+  "Ethically Sourced Precious Metals",
+  "Personalized 1-on-1 Consultations",
+];
+
+// Customer quotes: only the opening sentence of each is included here; paste the full text from WordPress to extend.
+const REVIEWS = [
+  ["Sarah & Mark", "Custom Engagement Ring", "Aliandabi helped me design a custom engagement ring that completely blew us away."],
+  ["Eleanor R.", "Family Heirloom Redesign", "I inherited an heirloom gemstone that was in a very dated setting."],
+  ["James T.", "Bespoke Men's Band", "The level of precision in their work is unmatched."],
+];
+
+const WHY = [
+  ["Bespoke Master Craftsmanship", "Unlike mass-produced jewelry, every custom piece at Aliandabi is hand-forged by master bench jewelers."],
+  ["IGI and/or GIA Certified & Ethically Sourced", "We deal exclusively in 100% conflict-free diamonds and traceably mined diamonds."],
+  ["Comprehensive Lifetime Warranty", "Our pieces are designed to become family heirlooms."],
+  ["Fully Insured Overnight Shipping", "All fine jewelry shipments require an adult signature upon delivery."],
+];
+
+const BRANDS: [string, string][] = [
+  ["Ali&Abi Fine", "/collections/aliandabi-fine"],
+  ["Fara Diamonds", "/collections/FaraDIamonds"],
+  ["Luv Eclipse", "/collections/luveclipseclipse"],
+  ["Nau-T Girl Jewelry", "/collections/Naut-Girl_Jewelry"],
+  ["Fireborn", "/collections/fireborn"],
 ];
 
 const TRUST = [
@@ -113,6 +144,80 @@ export default async function Home() {
         </div>
       </section>
 
+      <section className="band">
+        <div className="container split">
+          <div className="spotlight-img">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={`${UP}/E3401R_1.jpg`} alt="Black and White Diamond Earrings" loading="lazy" />
+          </div>
+          <div>
+            <p className="eyebrow">Limited Time Special</p>
+            <h2>The Weekly Spotlight</h2>
+            <p>Every week, we feature a masterfully crafted piece at an exclusive tier.</p>
+            <h3>Black and White Diamond Halo Dangle Earrings</h3>
+            <p>
+              A 1.25 ct cushion-cut black diamond within a 0.50 ct halo of round accents, 3.00 ctw total, in 14K rose gold.
+            </p>
+            <p className="price price-large">
+              <ins>$549.00</ins> <del>$2,100.00</del>
+            </p>
+            <Link
+              href="/shop/all_jewelry/earrings/3-cttw-black-and-white-diamond-halo-dangle-earrings-for-women-in-14k-rose-gold"
+              className="btn btn-primary"
+            >
+              View Now
+            </Link>
+            <ul className="ticks">
+              {SPOTLIGHT_FEATURES.map((f) => (
+                <li key={f}>{f}</li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section className="container section">
+        <header className="section-head">
+          <p className="eyebrow">What our customers say</p>
+          <h2>Love From Our Aliandabi Family</h2>
+        </header>
+        <div className="reviews">
+          {REVIEWS.map(([name, what, quote]) => (
+            <figure key={name} className="review">
+              <div className="stars" aria-label="5 out of 5 stars">★★★★★</div>
+              <blockquote>&ldquo;{quote}&rdquo;</blockquote>
+              <figcaption>
+                <strong>{name}</strong>
+                <span>{what}</span>
+              </figcaption>
+            </figure>
+          ))}
+        </div>
+        <p className="center">
+          <a href={`${WC_PUBLIC_BASE}/reviews`} className="btn">
+            Read More Stories
+          </a>
+        </p>
+      </section>
+
+      <section className="band">
+        <div className="container section">
+          <header className="section-head">
+            <p className="eyebrow">The Aliandabi Standard</p>
+            <h2>Why ALIANDABI?</h2>
+            <p>For over 25 years, we believe buying fine jewelry should be a transparent, secure, and deeply personal experience.</p>
+          </header>
+          <div className="trust">
+            {WHY.map(([title, text]) => (
+              <div key={title}>
+                <h3>{title}</h3>
+                <p>{text}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       <section className="container section">
         <div className="trust">
           {TRUST.map(([title, text]) => (
@@ -121,6 +226,30 @@ export default async function Home() {
               <p>{text}</p>
             </div>
           ))}
+        </div>
+      </section>
+
+      <section className="container section center">
+        <p className="eyebrow">Our Brands</p>
+        <h2>Available at Aliandabi</h2>
+        <ul className="brands">
+          {BRANDS.map(([name, path]) => (
+            <li key={name}>
+              <a href={`${WC_PUBLIC_BASE}${path}`}>{name}</a>
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      <section className="band">
+        <div className="container section center narrow">
+          <p className="eyebrow">Join Aliandabi</p>
+          <h2>Unlock Private Access</h2>
+          <p>Be the first to view our limited custom drops, gain access to private consultations, and receive exclusive styling insights.</p>
+          <Link href="/newsletter" className="btn btn-primary">
+            Subscribe
+          </Link>
+          <p className="muted">We respect your privacy. Unsubscribe at any time.</p>
         </div>
       </section>
     </>
