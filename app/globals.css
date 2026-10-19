@@ -210,3 +210,8 @@ p { margin: 0 0 1em; }
 .why-card p { color: var(--muted); font-size: .92rem; margin: 0; }
 @keyframes marquee-rtl { from { transform: translateX(0); } to { transform: translateX(-50%); } }
 @media (prefers-reduced-motion: reduce) { .marquee { overflow-x: auto; } .marquee-track { animation: none; } }
+
+/* Full-width WordPress pages (custom design, contact us) */
+.wp-full { width: 100%; max-width: none; margin: 0; padding: 0; }
+.wp-full img { max-width: 100%; height: auto; }
+.wp-full a { text-decoration: none; }
