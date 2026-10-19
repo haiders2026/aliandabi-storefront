@@ -207,9 +207,9 @@ export default async function Home() {
             <h2>Why ALIANDABI?</h2>
             <p>For over 25 years, we believe buying fine jewelry should be a transparent, secure, and deeply personal experience.</p>
           </header>
-          <div className="trust">
+          <div className="why-scroll">
             {WHY.map(([title, text]) => (
-              <div key={title}>
+              <div key={title} className="why-card">
                 <h3>{title}</h3>
                 <p>{text}</p>
               </div>
