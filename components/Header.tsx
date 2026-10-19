@@ -24,6 +24,9 @@ export async function Header() {
           <img src={LOGO} alt="ali&abi" height={44} />
         </Link>
         <nav className="nav" aria-label="Main">
+          <div className="nav-item">
+            <Link href="/">Home</Link>
+          </div>
           {top.map((cat) => {
             const children = cats.filter((c) => c.parent === cat.id);
             return (
@@ -44,14 +47,14 @@ export async function Header() {
           <div className="nav-item">
             <Link href="/custom-design">Custom Design</Link>
           </div>
+          <div className="nav-item">
+            <a href={`${WC_PUBLIC_BASE}/my-account/`}>My Account</a>
+          </div>
         </nav>
         <div className="header-actions">
           <form action="/search" className="search">
             <input type="search" name="q" placeholder="Search" aria-label="Search products" />
           </form>
-          <a href={`${WC_PUBLIC_BASE}/my-account/`} aria-label="My account">
-            Account
-          </a>
           <CartLink />
         </div>
       </div>
