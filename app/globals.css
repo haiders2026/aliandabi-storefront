@@ -200,13 +200,13 @@ p { margin: 0 0 1em; }
 .brands a { font-size: .95rem; letter-spacing: .08em; text-transform: uppercase; }
 @media (max-width: 900px) { .reviews { grid-template-columns: 1fr; } .ticks { grid-template-columns: 1fr; } }
 
-/* Why ALIANDABI: one-line auto-scrolling marquee (moves left to right) */
+/* Why ALIANDABI: one-line auto-scrolling marquee (moves right to left) */
 .marquee { overflow: hidden; padding: 4px 0 8px; }
-.marquee-track { display: flex; width: max-content; animation: marquee-ltr 60s linear infinite; }
+.marquee-track { display: flex; width: max-content; animation: marquee-rtl 60s linear infinite; }
 .marquee:hover .marquee-track { animation-play-state: paused; }
 .marquee-group { display: flex; gap: 20px; padding-right: 20px; }
 .why-card { flex: 0 0 320px; background: #fff; padding: 26px; border-top: 3px solid var(--accent); text-align: left; }
 .why-card h3 { font-size: 1.3rem; }
 .why-card p { color: var(--muted); font-size: .92rem; margin: 0; }
-@keyframes marquee-ltr { from { transform: translateX(-50%); } to { transform: translateX(0); } }
+@keyframes marquee-rtl { from { transform: translateX(0); } to { transform: translateX(-50%); } }
 @media (prefers-reduced-motion: reduce) { .marquee { overflow-x: auto; } .marquee-track { animation: none; } }
