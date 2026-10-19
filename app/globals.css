@@ -66,9 +66,9 @@ p { margin: 0 0 1em; }
 .logo img { height: 44px; width: auto; }
 .nav { display: flex; gap: 0; flex: 1; flex-wrap: nowrap; white-space: nowrap; justify-content: center; }
 .nav-item { position: relative; }
-.nav-item > a { display: block; padding: 8px 9px; font-size: .72rem; letter-spacing: .05em; text-transform: uppercase; color: #fff; }
+.nav-item > a { font-family: var(--font-roboto), Roboto, Arial, sans-serif; font-weight: 500; display: block; padding: 8px 9px; font-size: .72rem; letter-spacing: .05em; text-transform: uppercase; color: #fff; }
 .dropdown { display: none; position: absolute; top: 100%; left: 0; min-width: 240px; background: var(--bg); border: 1px solid var(--line); padding: 8px 0; box-shadow: 0 12px 28px rgba(0,0,0,.08); }
-.dropdown a { display: block; padding: 8px 18px; font-size: .85rem; color: var(--ink); white-space: nowrap; }
+.dropdown a { font-family: var(--font-roboto), Roboto, Arial, sans-serif; display: block; padding: 8px 18px; font-size: .85rem; color: var(--ink); white-space: nowrap; }
 .dropdown a:hover { color: var(--accent); }
 .dropdown a:hover { background: var(--bg-soft); }
 .nav-item:hover .dropdown, .nav-item:focus-within .dropdown { display: block; }
