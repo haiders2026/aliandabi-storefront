@@ -238,3 +238,14 @@ p { margin: 0 0 1em; }
 .review-head { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px; margin-bottom: 6px; }
 .review-head .stars { color: var(--accent); letter-spacing: .1em; }
 .verified { font-size: .75rem; letter-spacing: .08em; text-transform: uppercase; color: #2d6a3e; }
+
+/* Account landing page */
+.account-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; max-width: 920px; margin: 0 auto; }
+.account-card { padding: 40px 36px; background: var(--bg-soft); border-top: 3px solid var(--accent); text-align: center; }
+.account-card-dark { background: #0b3d2e; color: #fff; }
+.account-card-dark h2, .account-card-dark p { color: #fff; }
+.account-card-dark .eyebrow { color: #d9b878; }
+.account-card .btn-block { margin-top: 24px; }
+.account-small { margin-top: 14px; font-size: .88rem; }
+.account-card-dark .account-small a { text-decoration: underline; }
+@media (max-width: 760px) { .account-cards { grid-template-columns: 1fr; } }
