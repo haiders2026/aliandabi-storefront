@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { WC_PUBLIC_BASE } from "@/lib/woo";
 
 export function Footer() {
   return (
@@ -24,7 +23,7 @@ export function Footer() {
           <ul>
             <li><Link href="/contact-us">Contact us</Link></li>
             <li><Link href="/custom-design">Custom design</Link></li>
-            <li><a href={`${WC_PUBLIC_BASE}/my-account/`}>My account</a></li>
+            <li><Link href="/account">My account</Link></li>
             <li><Link href="/terms-and-conditions">Terms &amp; conditions</Link></li>
             <li><Link href="/privacy-policy">Privacy policy</Link></li>
           </ul>
