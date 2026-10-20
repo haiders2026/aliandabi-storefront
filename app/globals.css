@@ -215,3 +215,16 @@ p { margin: 0 0 1em; }
 .wp-full { width: 100%; max-width: none; margin: 0; padding: 0; }
 .wp-full img { max-width: 100%; height: auto; }
 .wp-full a { text-decoration: none; }
+
+/* Contact page */
+.contact-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 24px; text-align: center; }
+.contact-cards > div { padding: 28px 20px; background: var(--bg-soft); border-top: 3px solid var(--accent); }
+.contact-cards p { margin: 0 0 4px; }
+.contact-main { display: grid; grid-template-columns: 1fr 1.3fr; gap: 56px; align-items: start; }
+.contact-hours { margin-top: 32px; }
+.contact-form { background: var(--bg-soft); padding: 32px; }
+.contact-form input, .contact-form textarea { width: 100%; padding: 11px 12px; border: 1px solid var(--line); font: inherit; background: #fff; border-radius: var(--radius); }
+.contact-form select { border-radius: var(--radius); }
+.contact-form .hp { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
+.form-error { color: #a33; margin-top: 12px; }
+@media (max-width: 900px) { .contact-main { grid-template-columns: 1fr; gap: 32px; } }
