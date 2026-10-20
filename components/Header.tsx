@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { WC_PUBLIC_BASE } from "@/lib/woo";
 import { CartLink } from "./CartLink";
 
 const LOGO = "https://www.aliandabi.com/wp-content/uploads/thegem/logos/logo_bcec44bbb96912dec54d0f98ecadb25f_1x.png";
@@ -90,7 +89,7 @@ export function Header() {
             </div>
           ))}
           <div className="nav-item">
-            <a href={`${WC_PUBLIC_BASE}/my-account/`}>My Account</a>
+            <Link href="/account">My Account</Link>
           </div>
         </nav>
         <div className="header-actions">
