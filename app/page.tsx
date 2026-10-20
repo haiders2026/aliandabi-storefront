@@ -202,26 +202,26 @@ export default async function Home() {
         </p>
       </section>
 
-      <section className="band">
-        <div className="container section">
+      <section className="band why-band">
+        <div className="container why-head">
           <header className="section-head">
             <p className="eyebrow">The Aliandabi Standard</p>
             <h2>Why ALIANDABI?</h2>
             <p>For over 25 years, we believe buying fine jewelry should be a transparent, secure, and deeply personal experience.</p>
           </header>
-          <div className="marquee" aria-label="Why choose ali&abi">
-            <div className="marquee-track">
-              {[0, 1].map((copy) => (
-                <div className="marquee-group" key={copy} aria-hidden={copy === 1}>
-                  {MARQUEE.map(([title, text]) => (
-                    <div key={`${copy}-${title}`} className="why-card">
-                      <h3>{title}</h3>
-                      <p>{text}</p>
-                    </div>
-                  ))}
-                </div>
-              ))}
-            </div>
+        </div>
+        <div className="marquee" aria-label="Why choose ali&abi">
+          <div className="marquee-track">
+            {[0, 1].map((copy) => (
+              <div className="marquee-group" key={copy} aria-hidden={copy === 1}>
+                {MARQUEE.map(([title, text]) => (
+                  <div key={`${copy}-${title}`} className="why-card">
+                    <h3>{title}</h3>
+                    <p>{text}</p>
+                  </div>
+                ))}
+              </div>
+            ))}
           </div>
         </div>
       </section>
@@ -246,6 +246,7 @@ export default async function Home() {
           <Link href="/newsletter" className="btn btn-primary">
             Subscribe
           </Link>
+          <p></p>
           <p className="muted">We respect your privacy. Unsubscribe at any time.</p>
         </div>
       </section>
