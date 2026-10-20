@@ -4,7 +4,8 @@ import { notFound } from "next/navigation";
 import { BuyBox } from "@/components/BuyBox";
 import { Gallery } from "@/components/Gallery";
 import { ProductGrid } from "@/components/ProductCard";
-import { categoryPath, decodeEntities, getCategories, getProductBySlug, getProducts, productPath } from "@/lib/woo";
+import { categoryPath, decodeEntities, getCategories, getProductBySlug, getProducts, getReviews, productPath } from "@/lib/woo";
+import { Reviews } from "@/components/Reviews";
 
 type Props = { params: Promise<{ path: string[] }> };
 
@@ -26,9 +27,10 @@ export default async function ProductPage({ params }: Props) {
   const product = await getProductBySlug(path[path.length - 1]);
   if (!product) notFound();
 
-  const [cats, related] = await Promise.all([
+  const [cats, related, reviews] = await Promise.all([
     getCategories(),
     product.categories[0] ? getProducts({ category: product.categories[0].slug, perPage: 5 }) : Promise.resolve({ products: [] }),
+    getReviews(product.id),
   ]);
 
   const name = decodeEntities(product.name);
@@ -45,6 +47,15 @@ export default async function ProductPage({ params }: Props) {
     sku: product.sku || undefined,
     image: product.images.map((i) => i.src),
     description: decodeEntities(product.short_description.replace(/<[^>]+>/g, " ")).trim(),
+    ...(reviews.length
+      ? {
+          aggregateRating: {
+            "@type": "AggregateRating",
+            ratingValue: (reviews.reduce((n, r) => n + r.rating, 0) / reviews.length).toFixed(1),
+            reviewCount: reviews.length,
+          },
+        }
+      : {}),
     offers: {
       "@type": "Offer",
       priceCurrency: product.prices.currency_code,
@@ -111,6 +122,8 @@ export default async function ProductPage({ params }: Props) {
           </>
         )}
       </section>
+
+      <Reviews reviews={reviews} writeUrl={`${product.permalink}#reviews`} />
 
       {related.products.filter((p) => p.id !== product.id).length > 0 && (
         <section>
