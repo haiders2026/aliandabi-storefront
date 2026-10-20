@@ -45,6 +45,8 @@ export type WooProduct = {
   variations: WooVariation[];
   is_purchasable: boolean;
   is_in_stock: boolean;
+  average_rating?: string;
+  review_count?: number;
 };
 
 export type WooCategory = {
@@ -56,6 +58,15 @@ export type WooCategory = {
   description: string;
   image: { src: string; alt: string } | null;
   permalink: string;
+};
+
+export type WooReview = {
+  id: number;
+  date_created: string;
+  reviewer: string;
+  review: string;
+  rating: number;
+  verified?: boolean;
 };
 
 export type WpPage = { id: number; slug: string; title: { rendered: string }; content: { rendered: string } };
@@ -164,4 +175,9 @@ export function productPath(p: Pick<WooProduct, "permalink" | "slug">): string {
 export async function getWpPage(slug: string): Promise<WpPage | null> {
   const { data } = await getJson<WpPage[]>(`${WP}/pages?slug=${encodeURIComponent(slug)}`, []);
   return Array.isArray(data) && data.length ? data[0] : null;
+}
+
+export async function getReviews(productId: number): Promise<WooReview[]> {
+  const { data } = await getJson<WooReview[]>(`${STORE}/products/reviews?product_id=${productId}&per_page=20&orderby=date_gmt&order=desc`, []);
+  return Array.isArray(data) ? data : [];
 }
