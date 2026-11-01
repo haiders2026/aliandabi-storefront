@@ -22,17 +22,19 @@ export function Gallery({ images, name }: { images: WooImage[]; name: string }) 
       </div>
       {images.length > 1 && (
         <div className="gallery-thumbs">
-          {images.map((img, i) => (
-            <button
-              key={img.id}
-              type="button"
-              className={i === active ? "active" : ""}
-              onClick={() => setActive(i)}
-              aria-label={`Show image ${i + 1}`}
-            >
-              <Image src={img.thumbnail || img.src} alt="" width={120} height={120} />
-            </button>
-          ))}
+          <div className="gallery-thumbs-list">
+            {images.map((img, i) => (
+              <button
+                key={img.id}
+                type="button"
+                className={i === active ? "active" : ""}
+                onClick={() => setActive(i)}
+                aria-label={`Show image ${i + 1}`}
+              >
+                <Image src={img.thumbnail || img.src} alt="" width={120} height={120} />
+              </button>
+            ))}
+          </div>
         </div>
       )}
     </div>
