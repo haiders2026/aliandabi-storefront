@@ -8,5 +8,10 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
   if (!Number.isFinite(n) || n <= 0) return NextResponse.json({ error: "bad id" }, { status: 400 });
   const product = await getProductById(n);
   if (!product) return NextResponse.json({ error: "not found" }, { status: 404 });
-  return NextResponse.json({ id: product.id, prices: product.prices, inStock: product.is_in_stock });
+  return NextResponse.json({
+    id: product.id,
+    prices: product.prices,
+    inStock: product.is_in_stock,
+    image: product.images[0] ?? null,
+  });
 }
