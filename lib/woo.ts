@@ -32,6 +32,7 @@ export type WooProduct = {
   id: number;
   name: string;
   slug: string;
+  parent?: number;
   type: string;
   permalink: string;
   sku: string;
@@ -136,8 +137,14 @@ export async function getProducts(opts: ProductQuery = {}) {
 }
 
 export async function getProductBySlug(slug: string): Promise<WooProduct | null> {
+  // A slug lookup in the Store API also searches variations, and on this store the variations share
+  // the parent's slug. Prefer the real product; if only a variation comes back, load its parent.
   const { data } = await getJson<WooProduct[]>(`${STORE}/products?slug=${encodeURIComponent(slug)}`, []);
-  return Array.isArray(data) && data.length ? data[0] : null;
+  if (!Array.isArray(data) || !data.length) return null;
+  const product = data.find((p) => p.type !== "variation");
+  if (product) return product;
+  const parentId = data[0].parent;
+  return parentId ? getProductById(parentId) : null;
 }
 
 export async function getProductById(id: number): Promise<WooProduct | null> {
