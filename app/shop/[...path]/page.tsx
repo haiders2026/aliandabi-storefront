@@ -81,10 +81,10 @@ export default async function ProductPage({ params }: Props) {
         <Gallery images={product.images} name={name} />
         <div className="product-info">
           <h1>{name}</h1>
-          {product.sku && <p className="muted">SKU {product.sku}</p>}
           <BuyBox
             productId={product.id}
             name={name}
+            sku={product.sku}
             href={productPath(product)}
             image={product.images[0]?.thumbnail ?? product.images[0]?.src}
             type={product.type}
