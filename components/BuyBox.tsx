@@ -9,7 +9,7 @@ type Attr = { name: string; terms: { name: string; slug: string }[] };
 type Variation = { id: number; attributes: { name: string; value: string }[] };
 type PriceBlock = { price: string; regular_price: string; sale_price: string; currency_symbol: string; currency_minor_unit: number };
 type VariationImage = { id: number; src: string; thumbnail: string; alt: string };
-type VariationData = { prices?: PriceBlock; image?: VariationImage | null };
+type VariationData = { prices?: PriceBlock; image?: VariationImage | null; sku?: string };
 
 // Fill colors for metal swatches, matched on the term name or slug.
 const METAL_FILLS: [RegExp, string][] = [
@@ -41,6 +41,7 @@ function fits(v: Variation, chosen: Record<string, string>) {
 export type BuyBoxProps = {
   productId: number;
   name: string;
+  sku?: string;
   href: string;
   image?: string;
   type: string;
@@ -65,6 +66,7 @@ export function BuyBox(props: BuyBoxProps) {
   const [qty, setQty] = useState(1);
   const [selected, setSelected] = useState<Record<string, string>>({});
   const [variationPrices, setVariationPrices] = useState<PriceBlock | null>(null);
+  const [variationSku, setVariationSku] = useState<string | null>(null);
   const [added, setAdded] = useState(false);
 
   const isVariable = props.type === "variable" && props.variationAttributes.length > 0;
@@ -110,10 +112,13 @@ export function BuyBox(props: BuyBoxProps) {
 
   useEffect(() => {
     setVariationPrices(null);
+    setVariationSku(null);
     if (!matched) return;
     let cancelled = false;
     loadVariation(matched.id).then((data) => {
-      if (!cancelled && data?.prices) setVariationPrices(data.prices);
+      if (cancelled) return;
+      if (data?.prices) setVariationPrices(data.prices);
+      if (data?.sku) setVariationSku(data.sku);
     });
     return () => {
       cancelled = true;
@@ -161,6 +166,7 @@ export function BuyBox(props: BuyBoxProps) {
 
   return (
     <div className="buybox">
+      {(variationSku || props.sku) && <p className="muted sku">SKU {variationSku || props.sku}</p>}
       <p className="price price-large">
         {isVariable && !matched && !variationPrices ? (
           <span className="muted">Choose options to see price</span>
