@@ -1,12 +1,42 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useCart } from "./CartProvider";
+import { ShapeIcon } from "./ShapeIcon";
 
 type Attr = { name: string; terms: { name: string; slug: string }[] };
 type Variation = { id: number; attributes: { name: string; value: string }[] };
 type PriceBlock = { price: string; regular_price: string; sale_price: string; currency_symbol: string; currency_minor_unit: number };
+type VariationImage = { id: number; src: string; thumbnail: string; alt: string };
+type VariationData = { prices?: PriceBlock; image?: VariationImage | null };
+
+// Fill colors for metal swatches, matched on the term name or slug.
+const METAL_FILLS: [RegExp, string][] = [
+  [/rose/i, "linear-gradient(135deg, #f6d3c4, #d99a83 55%, #b9735d)"],
+  [/yellow|gold/i, "linear-gradient(135deg, #f8e7a8, #d8b25a 55%, #b58d35)"],
+  [/two.?tone/i, "linear-gradient(135deg, #f1f1f1 50%, #d8b25a 50%)"],
+  [/white|platinum|silver/i, "linear-gradient(135deg, #ffffff, #dcdcdc 55%, #b8b8b8)"],
+  [/black/i, "linear-gradient(135deg, #555, #222)"],
+];
+
+function swatchKind(attrName: string): "color" | "shape" | "text" {
+  if (/colou?r|metal/i.test(attrName)) return "color";
+  if (/shape/i.test(attrName)) return "shape";
+  return "text";
+}
+
+function same(a: string, b: string) {
+  return a.toLowerCase() === b.toLowerCase();
+}
+
+// A variation fits the current choices if every chosen attribute matches (an empty value means "any").
+function fits(v: Variation, chosen: Record<string, string>) {
+  return Object.entries(chosen).every(([name, slug]) => {
+    const va = v.attributes.find((a) => same(a.name, name));
+    return !va || !va.value || same(va.value, slug);
+  });
+}
 
 export type BuyBoxProps = {
   productId: number;
@@ -38,34 +68,71 @@ export function BuyBox(props: BuyBoxProps) {
   const [added, setAdded] = useState(false);
 
   const isVariable = props.type === "variable" && props.variationAttributes.length > 0;
+  const cache = useRef(new Map<number, Promise<VariationData | null>>());
+
+  function loadVariation(id: number) {
+    let p = cache.current.get(id);
+    if (!p) {
+      p = fetch(`/api/variation/${id}`)
+        .then((r) => (r.ok ? (r.json() as Promise<VariationData>) : null))
+        .catch(() => null);
+      cache.current.set(id, p);
+    }
+    return p;
+  }
+
+  const allChosen = isVariable && props.variationAttributes.every((a) => selected[a.name]);
 
   const matched = useMemo(() => {
-    if (!isVariable) return null;
-    if (props.variationAttributes.some((a) => !selected[a.name])) return null;
-    return (
-      props.variations.find((v) =>
-        v.attributes.every((va) => {
-          const chosen = selected[va.name];
-          return !va.value || (chosen && chosen.toLowerCase() === va.value.toLowerCase());
-        }),
-      ) ?? null
-    );
-  }, [isVariable, props.variationAttributes, props.variations, selected]);
+    if (!allChosen) return null;
+    return props.variations.find((v) => fits(v, selected)) ?? null;
+  }, [allChosen, props.variations, selected]);
+
+  // For the picture, the first variation that fits what has been chosen so far
+  // (so picking only a metal color already switches the image).
+  const preview = useMemo(() => {
+    if (!isVariable || !Object.keys(selected).length) return null;
+    return matched ?? props.variations.find((v) => fits(v, selected)) ?? null;
+  }, [isVariable, matched, props.variations, selected]);
+
+  useEffect(() => {
+    if (!preview) return;
+    let cancelled = false;
+    loadVariation(preview.id).then((data) => {
+      if (!cancelled && data?.image?.src) {
+        window.dispatchEvent(new CustomEvent("aa:variation-image", { detail: data.image }));
+      }
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [preview]);
 
   useEffect(() => {
     setVariationPrices(null);
     if (!matched) return;
     let cancelled = false;
-    fetch(`/api/variation/${matched.id}`)
-      .then((r) => (r.ok ? r.json() : null))
-      .then((data: { prices?: PriceBlock } | null) => {
-        if (!cancelled && data?.prices) setVariationPrices(data.prices);
-      })
-      .catch(() => undefined);
+    loadVariation(matched.id).then((data) => {
+      if (!cancelled && data?.prices) setVariationPrices(data.prices);
+    });
     return () => {
       cancelled = true;
     };
   }, [matched]);
+
+  function choose(attr: string, slug: string) {
+    setSelected((s) => {
+      const next = { ...s, [attr]: slug };
+      if (s[attr] === slug) delete next[attr]; // clicking the chosen swatch again clears it
+      return next;
+    });
+  }
+
+  // An option is available if some variation fits it together with the other choices.
+  function available(attr: string, slug: string) {
+    const others = { ...selected, [attr]: slug };
+    return props.variations.some((v) => fits(v, others));
+  }
 
   const activePrices = variationPrices ?? props.prices;
   const sale = activePrices.sale_price && activePrices.sale_price !== activePrices.regular_price;
@@ -107,19 +174,50 @@ export function BuyBox(props: BuyBoxProps) {
       </p>
 
       {isVariable &&
-        props.variationAttributes.map((attr) => (
-          <label key={attr.name} className="field">
-            <span>{attr.name}</span>
-            <select value={selected[attr.name] ?? ""} onChange={(e) => setSelected((s) => ({ ...s, [attr.name]: e.target.value }))}>
-              <option value="">Choose an option</option>
-              {attr.terms.map((t) => (
-                <option key={t.slug} value={t.slug}>
-                  {t.name}
-                </option>
-              ))}
-            </select>
-          </label>
-        ))}
+        props.variationAttributes.map((attr) => {
+          const kind = swatchKind(attr.name);
+          const chosen = attr.terms.find((t) => t.slug === selected[attr.name]);
+          return (
+            <div key={attr.name} className="field" role="radiogroup" aria-label={attr.name}>
+              <span>
+                {attr.name}
+                {chosen && <b className="field-value">: {chosen.name}</b>}
+              </span>
+              <div className={`swatches swatches-${kind}`}>
+                {attr.terms.map((t) => {
+                  const on = selected[attr.name] === t.slug;
+                  const ok = available(attr.name, t.slug);
+                  const fill = kind === "color" ? METAL_FILLS.find(([re]) => re.test(t.name) || re.test(t.slug))?.[1] : undefined;
+                  const icon = kind === "shape" ? <ShapeIcon shape={t.slug || t.name} /> : null;
+                  return (
+                    <button
+                      key={t.slug}
+                      type="button"
+                      role="radio"
+                      aria-checked={on}
+                      aria-label={t.name}
+                      title={t.name}
+                      disabled={!ok}
+                      className={`swatch${on ? " is-on" : ""}${fill ? " swatch-fill" : ""}`}
+                      onClick={() => choose(attr.name, t.slug)}
+                    >
+                      {fill ? (
+                        <i style={{ background: fill }} />
+                      ) : icon ? (
+                        <>
+                          {icon}
+                          <small>{t.name}</small>
+                        </>
+                      ) : (
+                        t.name
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          );
+        })}
 
       <div className="buy-row">
         <div className="qty">
