@@ -10,6 +10,7 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
   if (!product) return NextResponse.json({ error: "not found" }, { status: 404 });
   return NextResponse.json({
     id: product.id,
+    sku: product.sku,
     prices: product.prices,
     inStock: product.is_in_stock,
     image: product.images[0] ?? null,
