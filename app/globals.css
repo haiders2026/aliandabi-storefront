@@ -253,6 +253,17 @@ p { margin: 0 0 1em; }
 .wp-full img { max-width: 100%; height: auto; }
 .wp-full a { text-decoration: none; }
 
+/* Custom Design page (WordPress content inside .wp-full) */
+.wp-full .process-header > span { display: none; }               /* hide "Our Atelier" */
+.wp-full .process-header h2 { font-size: 2.6rem; margin-top: 0; }
+.wp-full .process-header p { font-size: 1.15rem; line-height: 1.6; max-width: 760px; text-wrap: balance; }
+.wp-full .aa-cd .aa-cd__title { text-align: center; }
+.wp-full .aa-cd .aa-cd__intro { text-align: center; margin-left: auto; margin-right: auto; }
+@media (max-width: 600px) {
+  .wp-full .process-header h2 { font-size: 2rem; }
+  .wp-full .process-header p { font-size: 1rem; }
+}
+
 /* Contact page */
 .contact-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 24px; text-align: center; }
 .contact-cards > div { padding: 28px 20px; background: var(--bg-soft); border-top: 3px solid var(--accent); }
